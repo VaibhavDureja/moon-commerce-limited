@@ -43,4 +43,6 @@ Verified a full 360-degree mouse drag, touch and keyboard rotation, automatic re
 
 ## Cloudflare Pages production
 
-All 11 canonical pages returned HTTP 200 with the expected canonical URLs on `moon-commerce-limited.pages.dev`. An unknown path returned HTTP 404. Both logo formats returned the expected attachment headers. The custom domains require separate HTTPS, redirect and public DNS checks after the GoDaddy nameserver change. [Production Pages site](https://moon-commerce-limited.pages.dev/)
+All 11 canonical pages returned HTTP 200 with the expected canonical URLs on `moon-commerce-limited.pages.dev`. An unknown path returned HTTP 404. Both logo formats returned the expected attachment headers. [Production Pages site](https://moon-commerce-limited.pages.dev/)
+
+After the GoDaddy nameserver change, the 11 pages and both logo downloads also passed on the custom HTTPS domain. The custom 404 returned HTTP 404. The `www` redirect returned HTTP 301 and preserved the path and query. An independent London check returned HTTP 200 for the main address and HTTP 301 for `www`. Public DNS returned all 15 preserved records with their original values. [Production website](https://mooncommercelimited.com/)

@@ -6,7 +6,7 @@ On 25 November 2026, the founder approved the site for publication, including th
 
 A separate `founder-review` deployment remains available for reviewing future changes. [Open the review site](https://founder-review.moon-commerce-limited.pages.dev/)
 
-The canonical custom domain is `mooncommercelimited.com`. Both custom domains were added to Pages. Public HTTPS on these domains depends on the GoDaddy nameserver change, Cloudflare zone activation and certificate issuance. The `www` host should permanently redirect to the matching path and query on the canonical host.
+The canonical custom domain is `mooncommercelimited.com`. GoDaddy delegated DNS to Cloudflare on 25 November 2026 and Cloudflare confirmed the zone is active. Both custom domains were added to Pages. The `www` host permanently redirects to the matching path and query on the canonical host.
 
 1. Build with `npm ci`, `npm run check`, `npm run build`, and `npm test`.
 2. Deploy a review build with `npm run deploy:preview`. Confirm the URL from Wrangler and review any changes in the preview.
@@ -38,10 +38,11 @@ Both pages of the GoDaddy DNS table were received, and all 20 entries were confi
 
 The free Cloudflare zone was created for `mooncommercelimited.com` and assigned `kenneth.ns.cloudflare.com` and `mina.ns.cloudflare.com`. All 17 transferable records were imported and compared against the GoDaddy inventory. Cloudflare now has proxied CNAME records for `@` and `www` pointing to `moon-commerce-limited.pages.dev`. The other 15 records retain their original values and TTLs, including Google Workspace MX records, SPF, DKIM, DMARC and verification records.
 
-1. In GoDaddy, go to **Domain Portfolio → mooncommercelimited.com → DNS → Nameservers → Change Nameservers**. Choose the option to use your own nameservers, enter `kenneth.ns.cloudflare.com` and `mina.ns.cloudflare.com`, and save. Complete GoDaddy's confirmation if prompted.
-2. Wait for the Cloudflare zone to show **Active** and for both custom domains and HTTPS certificates to be ready in Cloudflare Pages.
-3. Configure a zone redirect matching `http.host eq "www.mooncommercelimited.com"` with dynamic destination `concat("https://mooncommercelimited.com", http.request.uri.path)`, status `301` and **Preserve query string** enabled.
-4. Verify the apex homepage and 404 route over HTTPS and test a `www` subpage with a query parameter. Confirm public MX, SPF, DKIM and DMARC values against the GoDaddy inventory.
+The zone has an enabled `301` redirect matching `www.mooncommercelimited.com` and using `concat("https://mooncommercelimited.com", http.request.uri.path)` as the destination with **Preserve query string** enabled. The redirect allows Cloudflare certificate validation requests under `/.well-known/` to reach Pages.
+
+In GoDaddy, the nameserver setting is under **Domain Portfolio → mooncommercelimited.com → DNS → Nameservers**. Check the Cloudflare zone Overview for nameserver activation. Check the Pages project's Custom domains tab separately for the two hostnames' certificate validation.
+
+After a DNS change, verify the apex homepage and 404 route over HTTPS and test a `www` subpage with a query parameter. Compare public MX, SPF, DKIM and DMARC values with the GoDaddy inventory.
 
 If an issue requires rollback, restore the saved records or revert the GoDaddy nameservers to the previous pair once the old zone is confirmed intact. [Cloudflare custom domains](https://developers.cloudflare.com/pages/configuration/custom-domains/) · [GoDaddy nameservers](https://www.godaddy.com/help/change-my-domain-nameservers-664)
 
