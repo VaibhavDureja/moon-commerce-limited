@@ -36,7 +36,7 @@ The .com registry shows GoDaddy as the registrar. Public DNS returns the followi
 | CNAME | `_acme-challenge` | `mooncommercelimited.com.a2a5947319618a50.dcv.cloudflare.com` |
 | CNAME | `_domainconnect` | `_domainconnect.gd.domaincontrol.com` |
 
-The first page of the GoDaddy DNS table and public lookups confirmed the DKIM aliases and certificate-verification CNAME. Confirm all 20 GoDaddy entries from the zone file or both pages of the DNS table before switching providers. GoDaddy manages the original apex NS and SOA records. Cloudflare provides replacements for those entries. Both the apex and www site addresses returned HTTP 404 during testing.
+Both pages of the GoDaddy DNS table were received, and all 20 entries were confirmed against public DNS. The migration inventory includes 17 records with one-hour TTLs. Preserve all five Google MX records, both DKIM aliases, both SPF TXT records, DMARC and the other verification and website records when preparing the new zone. Cloudflare generates the two replacement apex NS records and the SOA. The public registry has no DNSSEC DS record for this domain. Both the apex and www site addresses returned HTTP 404 during testing.
 
 ## GoDaddy to Cloudflare DNS
 
