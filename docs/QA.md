@@ -40,3 +40,7 @@ The updated globe passed desktop and 320px mobile browser checks for rotation, k
 ## Global trade map update
 
 Verified a full 360-degree mouse drag, touch and keyboard rotation, automatic resumption after release, market selection, reduced motion, the 320px layout and the static illustration. The market selector contains 29 agreement partners and 10 additional markets. Automated accessibility checks passed, including the expanded sources links. The new founder link reached the existing personal website. The SVG and 1024px PNG download headers and file contents were verified locally.
+
+## Cloudflare Pages production
+
+All 11 canonical pages returned HTTP 200 with the expected canonical URLs on `moon-commerce-limited.pages.dev`. An unknown path returned HTTP 404. Both logo formats returned the expected attachment headers. The custom domains require separate HTTPS, redirect and public DNS checks after the GoDaddy nameserver change. [Production Pages site](https://moon-commerce-limited.pages.dev/)
