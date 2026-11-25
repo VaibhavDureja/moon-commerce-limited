@@ -46,3 +46,7 @@ Verified a full 360-degree mouse drag, touch and keyboard rotation, automatic re
 All 11 canonical pages returned HTTP 200 with the expected canonical URLs on `moon-commerce-limited.pages.dev`. An unknown path returned HTTP 404. Both logo formats returned the expected attachment headers. [Production Pages site](https://moon-commerce-limited.pages.dev/)
 
 After the GoDaddy nameserver change, the 11 pages and both logo downloads also passed on the custom HTTPS domain. The custom 404 returned HTTP 404. The `www` redirect returned HTTP 301 and preserved the path and query. An independent London check returned HTTP 200 for the main address and HTTP 301 for `www`. Public DNS returned all 15 preserved records with their original values. [Production website](https://mooncommercelimited.com/)
+
+A later London check reproduced a TLS handshake failure on `www`. The redirect moved to a dedicated Cloudflare DNS record. The old GoDaddy certificate validation CNAME was removed and Cloudflare's validation was retried. The main site remained reachable over HTTPS. Public Cloudflare DNS matched all 14 records retained from GoDaddy after this repair, including the Google Workspace records.
+
+Cloudflare activated the Universal SSL certificate after the retry. HTTPS requests to `www` returned HTTP 301, including from London. Following the redirect returned HTTP 200 on the matching page and preserved the query string. Google Public DNS and Cloudflare's resolver both returned the new addresses for both hostnames.

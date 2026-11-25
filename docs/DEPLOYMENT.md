@@ -6,7 +6,7 @@ On 25 November 2026, the founder approved the site for publication, including th
 
 A separate `founder-review` deployment remains available for reviewing future changes. [Open the review site](https://founder-review.moon-commerce-limited.pages.dev/)
 
-The canonical custom domain is `mooncommercelimited.com`. GoDaddy delegated DNS to Cloudflare on 25 November 2026 and Cloudflare confirmed the zone is active. Both custom domains were added to Pages. The `www` host permanently redirects to the matching path and query on the canonical host.
+The canonical custom domain is `mooncommercelimited.com`. GoDaddy delegated DNS to Cloudflare on 25 November 2026. Cloudflare confirmed the zone and the Pages custom domain are active. Cloudflare's zone handles the `www` redirect.
 
 1. Build with `npm ci`, `npm run check`, `npm run build`, and `npm test`.
 2. Deploy a review build with `npm run deploy:preview`. Confirm the URL from Wrangler and review any changes in the preview.
@@ -36,11 +36,13 @@ Both pages of the GoDaddy DNS table were received, and all 20 entries were confi
 
 ## GoDaddy to Cloudflare DNS
 
-The free Cloudflare zone was created for `mooncommercelimited.com` and assigned `kenneth.ns.cloudflare.com` and `mina.ns.cloudflare.com`. All 17 transferable records were imported and compared against the GoDaddy inventory. Cloudflare now has proxied CNAME records for `@` and `www` pointing to `moon-commerce-limited.pages.dev`. The other 15 records retain their original values and TTLs, including Google Workspace MX records, SPF, DKIM, DMARC and verification records.
+The free Cloudflare zone was created for `mooncommercelimited.com` and assigned `kenneth.ns.cloudflare.com` and `mina.ns.cloudflare.com`. All 17 transferable records were imported and compared against the GoDaddy inventory. The proxied apex CNAME points to `moon-commerce-limited.pages.dev`. The proxied `www` A record uses Cloudflare's redirect-only placeholder `192.0.2.0`. Fourteen records retain their original values and TTLs, including Google Workspace MX records, SPF, DKIM, DMARC and site verification records. [Cloudflare redirect-only DNS](https://developers.cloudflare.com/dns/manage-dns-records/how-to/create-dns-records/#originless-setups)
 
-The zone has an enabled `301` redirect matching `www.mooncommercelimited.com` and using `concat("https://mooncommercelimited.com", http.request.uri.path)` as the destination with **Preserve query string** enabled. The redirect allows Cloudflare certificate validation requests under `/.well-known/` to reach Pages.
+The imported `_acme-challenge` CNAME was removed during the migration because the same name is used for Cloudflare's automatically managed Universal SSL TXT records. Keep the original record in the GoDaddy inventory for rollback. [Cloudflare domain control validation](https://developers.cloudflare.com/ssl/edge-certificates/changing-dcv-method/#full-dns-setup---no-action-required)
 
-In GoDaddy, the nameserver setting is under **Domain Portfolio → mooncommercelimited.com → DNS → Nameservers**. Check the Cloudflare zone Overview for nameserver activation. Check the Pages project's Custom domains tab separately for the two hostnames' certificate validation.
+The zone has an enabled `301` redirect matching `www.mooncommercelimited.com` and using `concat("https://mooncommercelimited.com", http.request.uri.path)` as the destination with **Preserve query string** enabled. It excludes Cloudflare certificate validation paths under `/.well-known/`.
+
+In GoDaddy, the nameserver setting is under **Domain Portfolio → mooncommercelimited.com → DNS → Nameservers**. Check the Cloudflare zone Overview for nameserver activation. Check the Pages project's Custom domains tab for the apex hostname. The `www` hostname uses the Cloudflare zone's Universal SSL certificate and Redirect Rule.
 
 After a DNS change, verify the apex homepage and 404 route over HTTPS and test a `www` subpage with a query parameter. Compare public MX, SPF, DKIM and DMARC values with the GoDaddy inventory.
 
