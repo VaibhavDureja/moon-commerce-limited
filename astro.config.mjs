@@ -5,5 +5,10 @@ export default defineConfig({
   output: 'static',
   trailingSlash: 'always',
   build: { format: 'directory', inlineStylesheets: 'never' },
+  vite: {
+    build: {
+      assetsInlineLimit: file => /\.woff2?$/.test(file) ? false : undefined
+    }
+  },
   devToolbar: { enabled: false }
 });
