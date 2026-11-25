@@ -1,7 +1,7 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import CallToAction from '../components/CallToAction.astro';
-import tradeNetwork from '../content/trade-network.svg?raw';
+import TradeGlobe from '../components/TradeGlobe.astro';
 import { company } from '../content/site';
 
 const focus = [
@@ -23,10 +23,7 @@ const focus = [
           <a class="button secondary" href="/contact/">Partner With Us <span class="diagonal-arrow" aria-hidden="true"></span></a>
         </div>
       </div>
-      <figure class="trade-network">
-        <div class="network-visual" aria-hidden="true" set:html={tradeNetwork} />
-        <figcaption><span class="chart-dot"></span><span>SupplyCorridor’s initial focus</span><span class="chart-caption">India · UK · EU</span></figcaption>
-      </figure>
+      <TradeGlobe />
     </div>
   </section>
 

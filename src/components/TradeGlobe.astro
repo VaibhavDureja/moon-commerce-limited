@@ -1,0 +1,18 @@
+---
+import tradeNetwork from '../content/trade-network.svg?raw';
+---
+<figure class="trade-network" data-trade-globe>
+  <div class="network-visual" aria-hidden="true">
+    <div class="globe-still" data-globe-still set:html={tradeNetwork}></div>
+    <canvas class="globe-canvas" data-globe-canvas hidden></canvas>
+  </div>
+  <figcaption>
+    <span class="chart-dot"></span>
+    <span>SupplyCorridor’s initial focus</span>
+    <span class="chart-caption">India · UK · EU</span>
+    <button class="globe-toggle" data-globe-toggle type="button" aria-label="Pause globe rotation" hidden>Pause</button>
+  </figcaption>
+</figure>
+<script>
+  import '../scripts/trade-globe.js';
+</script>
