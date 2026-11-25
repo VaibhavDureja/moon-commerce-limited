@@ -31,9 +31,12 @@ The .com registry shows GoDaddy as the registrar. Public DNS returns the followi
 | TXT | `@` | SPF policy referencing `dc-aa8e722993._spfm.mooncommercelimited.com`, Google verification, and additional TXT records |
 | TXT | `dc-aa8e722993._spfm` | `v=spf1 include:_spf.google.com ~all` |
 | TXT | `_dmarc` | GoDaddy DMARC policy with quarantine |
+| CNAME | `secureserver1._domainkey` | `s1.dkim.mooncommercelimited_com.1a0.onsecureserver.net` |
+| CNAME | `secureserver2._domainkey` | `s2.dkim.mooncommercelimited_com.1a0.onsecureserver.net` |
+| CNAME | `_acme-challenge` | `mooncommercelimited.com.a2a5947319618a50.dcv.cloudflare.com` |
 | CNAME | `_domainconnect` | `_domainconnect.gd.domaincontrol.com` |
 
-The public lookup covers these known names. Export the full GoDaddy zone before switching DNS providers to preserve every active record, including mail records and verification tokens. The current home URL returned HTTP 404 during testing.
+The first page of the GoDaddy DNS table and public lookups confirmed the DKIM aliases and certificate-verification CNAME. Confirm all 20 GoDaddy entries from the zone file or both pages of the DNS table before switching providers. GoDaddy manages the original apex NS and SOA records. Cloudflare provides replacements for those entries. Both the apex and www site addresses returned HTTP 404 during testing.
 
 ## GoDaddy to Cloudflare DNS
 
