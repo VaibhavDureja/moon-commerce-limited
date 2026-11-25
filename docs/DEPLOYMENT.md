@@ -2,6 +2,10 @@
 
 ## Cloudflare Pages
 
+On 25 November 2026, the Cloudflare Pages project was created and the `founder-review` branch was deployed. Cloudflare reports the deployment succeeded. The review homepage and the three policy pages loaded in a browser. [Open the review site](https://founder-review.moon-commerce-limited.pages.dev/)
+
+The production deployment and GoDaddy DNS switch are pending. At the time of deployment, the apex and `www` addresses still routed to GoDaddy and returned HTTP 404. The public launch requires founder review of the draft policies and a full DNS export to preserve email.
+
 The intended Pages project is `moon-commerce-limited`, with production branch `main`. The production host is `mooncommercelimited.com`. The `www` host should redirect permanently to the matching path and query on the production host.
 
 The Privacy Policy, Terms of Use and Cookie Policy are ready for founder review before public publication.
