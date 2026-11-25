@@ -1,29 +1,27 @@
 import { geoDistance, geoGraticule10, geoOrthographic, geoPath } from 'd3-geo';
 import landSource from '../../scripts/data/natural-earth-land.geojson?raw';
+import { india, tradeMarkets, tradeRoutes } from '../content/trade-markets.js';
 
 const width = 614;
 const height = 539;
-const centre = [width / 2, 254];
-const radius = 197;
-const latitude = 29;
+const centre = [width / 2, 265];
+const radius = 214;
 const minimumVisible = 0.65;
+const green = '#c8f45d';
+const silver = '#becbd9';
 const grid = geoGraticule10();
 const sphere = { type: 'Sphere' };
-const markets = [
-  { label: 'UK', location: [-0.12, 51.5], offset: [-12, -15] },
-  { label: 'EU', location: [12.5, 48.8], offset: [12, 15] },
-  { label: 'INDIA', location: [77.1, 28.6], offset: [12, -9] }
-];
-const routes = {
-  type: 'MultiLineString',
-  coordinates: markets.slice(0, 2).map(market => [market.location, markets[2].location])
-};
+const markets = [{ ...india, agreement: true }, ...tradeMarkets];
+const agreementRoutes = tradeRoutes(tradeMarkets.filter(market => market.agreement));
+const additionalRoutes = tradeRoutes(tradeMarkets.filter(market => !market.agreement));
+const clampLatitude = value => Math.max(-85, Math.min(85, value));
 
 function enhanceGlobe(figure) {
-  const visual = figure.querySelector('.network-visual');
+  const visual = figure.querySelector('[data-globe-surface]');
   const canvas = figure.querySelector('[data-globe-canvas]');
   const still = figure.querySelector('[data-globe-still]');
   const toggle = figure.querySelector('[data-globe-toggle]');
+  const selector = figure.querySelector('[data-globe-market]');
   const context = canvas.getContext('2d');
   if (!context) return;
 
@@ -34,13 +32,62 @@ function enhanceGlobe(figure) {
   let playing = !motionPreference.matches;
   let inView = false;
   let longitude = 38;
+  let latitude = 29;
+  let selected;
+  let drag;
+  let resumeTimer = 0;
+  let interactionFrame = 0;
   let previousFrame = 0;
   let nextFrame = 0;
   let animationFrame = 0;
 
-  function drawCircle(x, y, size) {
+  function circle(x, y, size) {
     context.beginPath();
     context.arc(x, y, size, 0, Math.PI * 2);
+  }
+
+  function drawRoutes(geometry, color, lineWidth, dashes = []) {
+    context.beginPath();
+    path(geometry);
+    context.strokeStyle = color;
+    context.lineWidth = lineWidth;
+    context.setLineDash(dashes);
+    context.stroke();
+    context.setLineDash([]);
+  }
+
+  function drawMarkets() {
+    const visible = [];
+    for (const market of markets) {
+      if (geoDistance([longitude, latitude], market.location) > Math.PI / 2 - 0.04) continue;
+      const [x, y] = projection(market.location);
+      const primary = market === selected || market.name === india.name;
+      if (primary) {
+        circle(x, y, 9);
+        context.fillStyle = market.agreement ? '#c8f45d40' : '#becbd940';
+        context.fill();
+      }
+      circle(x, y, primary ? 4 : 2.4);
+      context.fillStyle = market.agreement ? green : silver;
+      context.fill();
+      if (primary || market.featured) visible.push({ market, x, y, primary });
+    }
+
+    // Give the selected market and India priority when labels would overlap.
+    visible.sort((a, b) => Number(b.market === selected) - Number(a.market === selected) || Number(b.primary) - Number(a.primary));
+    context.font = '12px "IBM Plex Mono", monospace';
+    context.textBaseline = 'middle';
+    context.textAlign = 'left';
+    context.fillStyle = '#ecf5da';
+    const labels = [];
+    for (const { market, x, y } of visible) {
+      const textWidth = context.measureText(market.label).width;
+      const left = x + 9 + textWidth > width - 12 ? x - 9 - textWidth : x + 9;
+      const top = y - 10;
+      if (labels.some(label => Math.abs(label.top - top) < 15 && left < label.right + 8 && left + textWidth > label.left - 8)) continue;
+      context.fillText(market.label, left, top);
+      labels.push({ left, right: left + textWidth, top });
+    }
   }
 
   function draw() {
@@ -48,7 +95,7 @@ function enhanceGlobe(figure) {
     context.clearRect(0, 0, width, height);
     projection.rotate([-longitude, -latitude]);
 
-    drawCircle(...centre, radius + 23);
+    circle(...centre, radius + 23);
     context.setLineDash([2, 7]);
     context.lineWidth = 1;
     context.strokeStyle = '#536245';
@@ -77,34 +124,19 @@ function enhanceGlobe(figure) {
     shade.addColorStop(0, '#c8f45d15');
     shade.addColorStop(0.68, '#10111405');
     shade.addColorStop(1, '#101114b0');
-    drawCircle(...centre, radius);
+    circle(...centre, radius);
     context.fillStyle = shade;
     context.fill();
     context.strokeStyle = '#788761';
     context.lineWidth = 1.2;
     context.stroke();
 
-    context.beginPath();
-    path(routes);
-    context.strokeStyle = '#c8f45d';
-    context.lineWidth = 1.8;
-    context.stroke();
-
-    context.font = '13px "IBM Plex Mono", monospace';
-    context.textBaseline = 'middle';
-    for (const market of markets) {
-      if (geoDistance([longitude, latitude], market.location) > Math.PI / 2 - 0.08) continue;
-      const [x, y] = projection(market.location);
-      drawCircle(x, y, 10);
-      context.fillStyle = '#c8f45d35';
-      context.fill();
-      drawCircle(x, y, 4);
-      context.fillStyle = '#c8f45d';
-      context.fill();
-      context.textAlign = market.offset[0] < 0 ? 'right' : 'left';
-      context.fillStyle = '#ecf5da';
-      context.fillText(market.label, x + market.offset[0], y + market.offset[1]);
+    drawRoutes(additionalRoutes, '#becbd970', 1.2, [3, 4]);
+    drawRoutes(agreementRoutes, '#c8f45d69', 1.25);
+    if (selected && selected.name !== india.name) {
+      drawRoutes(tradeRoutes([selected]), selected.agreement ? green : silver, 2.1);
     }
+    drawMarkets();
   }
 
   function resize() {
@@ -127,25 +159,98 @@ function enhanceGlobe(figure) {
   }
 
   function syncAnimation() {
-    if (playing && inView && !document.hidden) {
+    if (playing && !drag && !resumeTimer && inView && !document.hidden) {
       if (!animationFrame) animationFrame = requestAnimationFrame(animate);
     } else {
       cancelAnimationFrame(animationFrame);
-      animationFrame = previousFrame = nextFrame = 0;
+      animationFrame = 0;
+      previousFrame = 0;
+      nextFrame = 0;
     }
   }
 
   function setPlaying(next) {
     playing = next;
+    if (next) {
+      clearTimeout(resumeTimer);
+      resumeTimer = 0;
+    }
     toggle.textContent = playing ? 'Pause' : 'Play';
     toggle.setAttribute('aria-label', playing ? 'Pause globe rotation' : 'Play globe rotation');
     syncAnimation();
   }
 
+  function resumeAfter(delay) {
+    clearTimeout(resumeTimer);
+    resumeTimer = setTimeout(() => {
+      resumeTimer = 0;
+      syncAnimation();
+    }, delay);
+    syncAnimation();
+  }
+
+  function queueDraw() {
+    if (interactionFrame) return;
+    interactionFrame = requestAnimationFrame(() => {
+      interactionFrame = 0;
+      draw();
+    });
+  }
+
+  visual.addEventListener('pointerdown', event => {
+    if (!event.isPrimary || event.button !== 0) return;
+    drag = { id: event.pointerId, x: event.clientX, y: event.clientY };
+    visual.setPointerCapture(event.pointerId);
+    visual.focus({ preventScroll: true });
+    syncAnimation();
+  });
+
+  visual.addEventListener('pointermove', event => {
+    if (!drag || drag.id !== event.pointerId) return;
+    const degreesPerPixel = 360 / Math.max(visual.clientWidth, 1);
+    longitude = (longitude + (drag.x - event.clientX) * degreesPerPixel) % 360;
+    latitude = clampLatitude(latitude + (event.clientY - drag.y) * degreesPerPixel);
+    drag.x = event.clientX;
+    drag.y = event.clientY;
+    queueDraw();
+  });
+
+  function endDrag(event) {
+    if (!drag || drag.id !== event.pointerId) return;
+    drag = undefined;
+    resumeAfter(1100);
+  }
+  for (const type of ['pointerup', 'pointercancel', 'lostpointercapture']) {
+    visual.addEventListener(type, endDrag);
+  }
+
+  const arrowSteps = { ArrowLeft: [12, 0], ArrowRight: [-12, 0], ArrowUp: [0, 10], ArrowDown: [0, -10] };
+  visual.addEventListener('keydown', event => {
+    const step = arrowSteps[event.key];
+    if (!step) return;
+    event.preventDefault();
+    longitude = (longitude + step[0]) % 360;
+    latitude = clampLatitude(latitude + step[1]);
+    resumeAfter(1100);
+    queueDraw();
+  });
+
+  selector.addEventListener('change', () => {
+    selected = markets.find(market => market.name === selector.value);
+    if (selected) {
+      [longitude, latitude] = selected.location;
+      resumeAfter(2600);
+    }
+    queueDraw();
+  });
+
   resize();
   canvas.hidden = false;
   still.hidden = true;
-  toggle.hidden = false;
+  visual.tabIndex = 0;
+  visual.setAttribute('aria-label', 'India trade globe, use the arrow keys to rotate');
+  figure.querySelector('[data-globe-help]').hidden = false;
+  figure.querySelector('[data-globe-controls]').hidden = false;
   setPlaying(playing);
   const visibility = new IntersectionObserver(([entry]) => {
     inView = entry.intersectionRatio >= minimumVisible;
@@ -169,5 +274,5 @@ if (figure && 'IntersectionObserver' in window && 'ResizeObserver' in window) {
     activate.disconnect();
     enhanceGlobe(figure);
   }, { threshold: minimumVisible });
-  activate.observe(figure.querySelector('.network-visual'));
+  activate.observe(figure.querySelector('[data-globe-surface]'));
 }

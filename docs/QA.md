@@ -36,3 +36,7 @@ Automated accessibility results cover the checks run. Production HTTPS, DNS, red
 ## Rotating homepage globe
 
 The updated globe passed desktop and 320px mobile browser checks for rotation, keyboard and pointer controls, viewport pause and resume, reduced motion and the JavaScript-free illustration. Automated accessibility checks passed. Local Cloudflare Pages mobile Lighthouse scored 100 in all four categories.
+
+## Global trade map update
+
+Verified a full 360-degree mouse drag, touch and keyboard rotation, automatic resumption after release, market selection, reduced motion, the 320px layout and the static illustration. The market selector contains 29 agreement partners and 10 additional markets. Automated accessibility checks passed, including the expanded sources links. The new founder link reached the existing personal website. The SVG and 1024px PNG download headers and file contents were verified locally.

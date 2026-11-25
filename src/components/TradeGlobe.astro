@@ -1,16 +1,47 @@
 ---
 import tradeNetwork from '../content/trade-network.svg?raw';
+import { marketGroups } from '../content/trade-markets.js';
 ---
 <figure class="trade-network" data-trade-globe>
-  <div class="network-visual" aria-hidden="true">
-    <div class="globe-still" data-globe-still set:html={tradeNetwork}></div>
-    <canvas class="globe-canvas" data-globe-canvas hidden></canvas>
+  <div class="network-visual" role="group" aria-label="India trade globe" data-globe-surface>
+    <div class="globe-still" data-globe-still aria-hidden="true" set:html={tradeNetwork}></div>
+    <canvas class="globe-canvas" data-globe-canvas aria-hidden="true" hidden></canvas>
   </div>
   <figcaption>
-    <span class="chart-dot"></span>
-    <span>SupplyCorridor’s initial focus</span>
-    <span class="chart-caption">India · UK · EU</span>
-    <button class="globe-toggle" data-globe-toggle type="button" aria-label="Pause globe rotation" hidden>Pause</button>
+    <div class="globe-caption-row">
+      <span class="globe-caption-title">India’s trade connections</span>
+      <span class="globe-help" data-globe-help hidden>Drag to rotate</span>
+    </div>
+    <div class="globe-caption-row globe-key">
+      <span><span class="chart-dot"></span>Agreement partners</span>
+      <span><span class="chart-dot chart-dot-other"></span>Additional markets</span>
+    </div>
+    <div class="globe-controls" data-globe-controls hidden>
+      <select data-globe-market aria-label="Find a market">
+        <option value="">Find a market</option>
+        <option value="India">India</option>
+        {marketGroups.map(group => (
+          <optgroup label={group.name}>
+            {group.markets.map(market => <option value={market.name}>{market.name}</option>)}
+          </optgroup>
+        ))}
+      </select>
+      <button class="globe-toggle" data-globe-toggle type="button" aria-label="Pause globe rotation">Pause</button>
+    </div>
+    <details class="globe-sources">
+      <summary>Map coverage and sources</summary>
+      <div class="globe-source-copy">
+        <p>Agreement coverage checked on 25 November 2026. The lines illustrate geographic links with India. SupplyCorridor is in development.</p>
+        <p>Pakistan is included as a SAFTA signatory. India restricts imports of Pakistani goods. The EU remains in the additional markets group while the agreement completes its legal steps.</p>
+        <ul>
+          <li><a href="https://www.pib.gov.in/PressReleasePage.aspx?PRID=2290437&amp;lang=2&amp;reg=48">India’s operational trade agreements</a></li>
+          <li><a href="https://www.pib.gov.in/PressReleasePage.aspx?PRID=2287009&amp;lang=1&amp;reg=3">EFTA agreement and recent trade agreements</a></li>
+          <li><a href="https://www.commerce.gov.in/files/2026-11/Major%20Achievement%20-%20October%202026_0.pdf">New Zealand entry into force</a></li>
+          <li><a href="https://policy.trade.ec.europa.eu/eu-trade-relationships-country-and-region/negotiations-and-agreements_en">EU agreement status</a></li>
+          <li><a href="https://www.pib.gov.in/PressReleasePage.aspx?PRID=2327627&amp;lang=2&amp;reg=48">India’s Pakistan import restriction</a></li>
+        </ul>
+      </div>
+    </details>
   </figcaption>
 </figure>
 <script>

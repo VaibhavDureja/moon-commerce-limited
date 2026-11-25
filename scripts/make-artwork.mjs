@@ -1,43 +1,32 @@
 import { readFile, writeFile } from 'node:fs/promises';
-import { geoGraticule10, geoOrthographic, geoPath } from 'd3-geo';
+import { geoDistance, geoGraticule10, geoOrthographic, geoPath } from 'd3-geo';
+import { india, tradeMarkets, tradeRoutes } from '../src/content/trade-markets.js';
 
 const land = JSON.parse(await readFile(new URL('./data/natural-earth-land.geojson', import.meta.url)));
 const projection = geoOrthographic()
   .rotate([-38, -29])
-  .translate([307, 254])
-  .scale(197)
-  .precision(0.6);
+  .translate([307, 265])
+  .scale(214)
+  .precision(0.8);
 const path = geoPath(projection).digits(1);
-const position = coordinates => projection(coordinates).map(Math.round);
-const uk = position([-0.12, 51.5]);
-const eu = position([12.5, 48.8]);
-const india = position([77.1, 28.6]);
-const curve = (from, control, to) => 'M' + from.join(' ') + ' Q' + control.join(' ') + ' ' + to.join(' ');
-const pin = ([x, y]) => '<g class="network-pin"><circle cx="' + x + '" cy="' + y + '" r="11" fill="#c8f45d" opacity=".14"/><circle cx="' + x + '" cy="' + y + '" r="4.5" fill="#c8f45d"/></g>';
+const routes = agreement => path(tradeRoutes(tradeMarkets.filter(market => market.agreement === agreement)));
+const stillMarkets = [{ ...india, agreement: true }, ...tradeMarkets]
+  .filter(market => geoDistance([38, 29], market.location) < Math.PI / 2 - 0.04);
+const marker = market => {
+  const [x, y] = projection(market.location).map(Math.round);
+  const color = market.agreement ? '#c8f45d' : '#becbd9';
+  return '<circle cx="' + x + '" cy="' + y + '" r="' + (market.name === 'India' ? '4.5' : '2.4') + '" fill="' + color + '"/>';
+};
 
 const globe = [
   '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 614 539" role="presentation" focusable="false">',
-  '<defs><pattern id="landDots" width="5" height="5" patternUnits="userSpaceOnUse"><circle cx="1.5" cy="1.5" r=".8" fill="#829957"/></pattern></defs>',
-  '<path d="M307 30v448M84 254h446" stroke="#394432" stroke-width=".8" stroke-dasharray="2 7" fill="none"/>',
-  '<circle cx="307" cy="254" r="220" fill="none" stroke="#49573e" stroke-dasharray="2 8"/>',
-  '<circle cx="307" cy="254" r="197" fill="#1a2219" stroke="#657654" stroke-width="1.2"/>',
-  '<path d="' + path(geoGraticule10()) + '" fill="none" stroke="#42523a" stroke-width=".72"/>',
-  '<path d="' + path(land) + '" fill="#35432b" stroke="#93a973" stroke-width=".8"/>',
-  '<path d="' + path(land) + '" fill="url(#landDots)" opacity=".55"/>',
-  '<g fill="none" stroke="#c8f45d" stroke-linecap="round">',
-  '<path class="route" pathLength="1" stroke-width="2.15" d="' + curve(uk, [350, 92], india) + '"/>',
-  '<path class="route" pathLength="1" stroke-width="1.55" opacity=".75" d="' + curve(eu, [351, 151], india) + '"/>',
-  '</g>',
-  '<g fill="none" stroke="#a9c278" stroke-width="1">',
-  '<path d="M' + uk.join(' ') + ' L171 112 H115"/>',
-  '<path d="M' + eu.join(' ') + ' L183 213 H132"/>',
-  '<path d="M' + india.join(' ') + ' L459 295 H508"/>',
-  '</g>',
-  pin(uk), pin(eu), pin(india),
-  '<g font-family="IBM Plex Mono,monospace" font-size="14" font-weight="500" letter-spacing="1.1" fill="#ecf5da">',
-  '<text x="105" y="103" text-anchor="end">UK</text><text x="122" y="218" text-anchor="end">EU</text><text x="516" y="301">INDIA</text>',
-  '</g>',
-  '<g fill="#839b61"><circle cx="307" cy="34" r="2.8"/><circle cx="527" cy="254" r="2.8"/><circle cx="307" cy="474" r="2.8"/><circle cx="87" cy="254" r="2.8"/></g>',
+  '<circle cx="307" cy="265" r="237" fill="none" stroke="#49573e" stroke-dasharray="2 8"/>',
+  '<circle cx="307" cy="265" r="214" fill="#1a251b" stroke="#788761" stroke-width="1.2"/>',
+  '<path d="' + path(land) + '" fill="#3d512f" stroke="#9aaf7b" stroke-width=".75"/>',
+  '<path d="' + path(geoGraticule10()) + '" fill="none" stroke="#a8ca6e" stroke-opacity=".2" stroke-width=".72"/>',
+  '<path class="route" d="' + routes(false) + '" fill="none" stroke="#becbd9" stroke-opacity=".45" stroke-dasharray="3 4" stroke-width="1.2"/>',
+  '<path class="route" d="' + routes(true) + '" fill="none" stroke="#c8f45d" stroke-opacity=".45" stroke-width="1.25"/>',
+  ...stillMarkets.map(marker),
   '</svg>'
 ].join('\n');
 await writeFile(new URL('../src/content/trade-network.svg', import.meta.url), globe + '\n');
@@ -53,6 +42,7 @@ const monogram = color => origin + 'viewBox="0 0 68 60" role="img" aria-label="M
 const wordmark = (ink, accent) => origin + 'viewBox="0 0 340 80" role="img" aria-label="Moon Commerce"><g transform="translate(8 11)">' + mark(accent) + '</g><text x="91" y="52" fill="' + ink + '" font-family="Space Grotesk,DejaVu Sans,sans-serif" font-size="36" font-weight="700" letter-spacing="-1.5">Moon Commerce</text></svg>';
 await Promise.all([
   save('moon-mark-lime.svg', monogram('#C8F45D')),
+  save('moon-commerce-mark.svg', monogram('#C8F45D')),
   save('moon-mark-dark.svg', monogram('#101114')),
   save('logo-dark.svg', wordmark('#101114', '#263C12')),
   save('logo-light.svg', wordmark('#F5F3ED', '#C8F45D')),
