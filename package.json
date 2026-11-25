@@ -1,0 +1,30 @@
+{
+  "name": "moon-commerce-website",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=24"
+  },
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "check": "astro check",
+    "test": "node scripts/check-build.mjs",
+    "deploy:preview": "wrangler pages deploy dist --project-name moon-commerce-limited --branch founder-review",
+    "deploy": "wrangler pages deploy dist --project-name moon-commerce-limited --branch main"
+  },
+  "dependencies": {
+    "@fontsource-variable/manrope": "^5.2.0",
+    "@fontsource-variable/space-grotesk": "^5.2.0",
+    "@fontsource/ibm-plex-mono": "^5.2.0",
+    "astro": "^7.4.13"
+  },
+  "devDependencies": {
+    "@astrojs/check": "^0.9.12",
+    "d3-geo": "^3.1.1",
+    "typescript": "^6.0.3",
+    "wrangler": "^4.168.0"
+  }
+}

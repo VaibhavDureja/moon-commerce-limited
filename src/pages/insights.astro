@@ -1,0 +1,34 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageIntro from '../components/PageIntro.astro';
+import { company } from '../content/site';
+
+const categories = ['Artificial Intelligence', 'International Trade', 'Digital Transformation', 'Entrepreneurship', 'Supply Chain Innovation', 'Business Automation'];
+const topics = [
+  ['How AI could reshape international B2B commerce', 'Where AI-assisted research, matching and decision support could help businesses discover and assess trading partners.'],
+  ['Why cross-border trade remains fragmented', 'How scattered supplier data, documents, compliance checks and logistics make purchases harder to coordinate.'],
+  ['The future of intelligent business automation', 'How tools could reduce repetitive work while keeping people responsible for important decisions.'],
+  ['Building digital infrastructure for international SMEs', 'What smaller businesses need to connect with buyers, suppliers and service providers across markets.']
+];
+---
+<BaseLayout title="Insights and Research | Moon Commerce Limited" description="Explore Moon Commerce’s editorial topics on artificial intelligence, international trade, entrepreneurship and business automation, and find the founder’s research." canonical="/insights/">
+  <PageIntro label="Insights" title="Research and ideas on what comes next." description="Our editorial focus explores emerging technology, commercial infrastructure and how international businesses operate." />
+  <section class="section light">
+    <div class="wrap editorial">
+      <div class="stack"><p class="eyebrow"><span></span>Published research</p><h2>Emerging Technologies and Their Impact on Business Transformation in the United Kingdom</h2></div>
+      <div class="stack">
+        <p>Vaibhav Dureja’s postgraduate research examines how artificial intelligence, blockchain and the Internet of Things affect international business.</p>
+        <a class="text-link" href={company.founder.research}>View the publication on SSRN <span class="diagonal-arrow" aria-hidden="true"></span></a>
+      </div>
+    </div>
+  </section>
+  <section class="section">
+    <div class="wrap">
+      <h2>Editorial topics</h2>
+      <ul class="label-row">{categories.map(category => <li>{category}</li>)}</ul>
+      <div class="directory">
+        {topics.map(([title, description]) => <article><h3>{title}</h3><p>{description}</p></article>)}
+      </div>
+    </div>
+  </section>
+</BaseLayout>

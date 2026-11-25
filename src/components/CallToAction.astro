@@ -1,0 +1,18 @@
+---
+interface Props {
+  title: string;
+  description: string;
+  label: string;
+  href?: string;
+}
+const { title, description, label, href = '/contact/' } = Astro.props;
+---
+<section class="section cta-section">
+  <div class="wrap cta-inner">
+    <div>
+      <h2>{title}</h2>
+      <p>{description}</p>
+    </div>
+    <a class="button primary" href={href}>{label}<span class="diagonal-arrow" aria-hidden="true"></span></a>
+  </div>
+</section>

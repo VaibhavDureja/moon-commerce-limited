@@ -1,0 +1,75 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import CallToAction from '../components/CallToAction.astro';
+import tradeNetwork from '../content/trade-network.svg?raw';
+import { company } from '../content/site';
+
+const focus = [
+  ['Artificial intelligence', 'Explore practical applications of AI, intelligent agents and automation to improve business decisions and reduce operational complexity.', 'ai'],
+  ['Global commerce', 'Develop digital infrastructure that connects businesses, manufacturers and international markets.', 'commerce'],
+  ['Business automation', 'Design solutions that simplify repetitive workflows, documentation and operational processes.', 'automation'],
+  ['Digital infrastructure', 'Explore scalable platforms that connect fragmented commercial systems.', 'infrastructure']
+];
+---
+<BaseLayout title="Moon Commerce Limited | Technology, AI & Global Commerce" description="Moon Commerce is a London-based technology venture developing intelligent solutions for artificial intelligence, international commerce and business automation." canonical="/">
+  <section class="hero">
+    <div class="wrap hero-grid">
+      <div class="hero-copy">
+        <p class="eyebrow"><span></span>Independent technology venture · London</p>
+        <h1>Building technology for a world without <em>commercial borders.</em></h1>
+        <p class="hero-description">Moon Commerce is a London-based technology venture developing intelligent digital solutions for international commerce, business automation and the next generation of global trade.</p>
+        <div class="actions">
+          <a class="button primary" href="/ventures/">Explore Our Ventures <span class="diagonal-arrow" aria-hidden="true"></span></a>
+          <a class="button secondary" href="/contact/">Partner With Us <span class="diagonal-arrow" aria-hidden="true"></span></a>
+        </div>
+      </div>
+      <figure class="trade-network">
+        <div class="network-visual" aria-hidden="true" set:html={tradeNetwork} />
+        <figcaption><span class="chart-dot"></span><span>SupplyCorridor’s initial focus</span><span class="chart-caption">India · UK · EU</span></figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <section class="section light">
+    <div class="wrap">
+      <div class="section-intro">
+        <p class="eyebrow"><span></span>What we do</p>
+        <div>
+          <h2>Complex problems.<br />Intelligent solutions.</h2>
+          <p>Global commerce remains fragmented by disconnected systems, administrative complexity and inefficient processes. We believe technology can improve how businesses discover opportunities, establish trust and operate across international markets.</p>
+          <p>Moon Commerce explores and develops technology-led ventures designed to address these challenges.</p>
+        </div>
+      </div>
+      <div class="focus-grid">
+        {focus.map(([title, description, kind]) => (
+          <article class="focus-item">
+            <img src={'/images/' + kind + '.svg'} alt="" width="44" height="44" loading="lazy" />
+            <h3>{title}</h3>
+            <p>{description}</p>
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap feature-grid">
+      <div>
+        <p class="eyebrow"><span></span>Flagship venture</p>
+        <div class="status"><span></span>In development</div>
+        <h2>SupplyCorridor</h2>
+        <p class="section-lead">The future of cross-border B2B commerce.</p>
+      </div>
+      <div class="feature-copy">
+        <p>SupplyCorridor is an early-stage technology venture developing a unified approach to international sourcing, supplier discovery, trade compliance, logistics and payments.</p>
+        <p>The initial focus is the India–UK–EU trade corridor, with ambitions for broader international expansion.</p>
+        <div class="feature-links">
+          <a class="text-link" href={company.venture}>Discover SupplyCorridor <span class="diagonal-arrow" aria-hidden="true"></span></a>
+          <a class="text-link" href="/ventures/">Explore the proposed platform <span aria-hidden="true">→</span></a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <CallToAction title="The future is built together." description="We welcome conversations with technical founders, investors, manufacturers, logistics providers, technology partners and organisations interested in improving international commerce." label="Start a Conversation" />
+</BaseLayout>

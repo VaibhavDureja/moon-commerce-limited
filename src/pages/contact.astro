@@ -1,0 +1,46 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageIntro from '../components/PageIntro.astro';
+import { company } from '../content/site';
+
+const enquiries = [
+  'Investment and strategic partnerships',
+  'Technical co-founder opportunities',
+  'Technology collaboration',
+  'Supplier and manufacturer partnerships',
+  'Business enquiries',
+  'Media and research'
+];
+---
+<BaseLayout title="Contact and Partnerships | Moon Commerce Limited" description="Connect with Moon Commerce or its founder about investment, partnerships, technical collaboration, suppliers, media and research." canonical="/contact/">
+  <PageIntro label="Contact" title="Let’s build something meaningful." description="We welcome conversations with people and organisations interested in intelligent technology and international commerce." />
+  <section class="section light">
+    <div class="wrap editorial">
+      <h2>Start a conversation</h2>
+      <div class="stack">
+        <p>Connect with us through our company profile or the founder’s LinkedIn profile. In your message, include your name, email address, organisation if relevant and a short description of your enquiry.</p>
+        <div class="profile-links">
+          <a class="text-link" href={company.linkedin}>Moon Commerce on LinkedIn <span class="diagonal-arrow" aria-hidden="true"></span></a>
+          <a class="text-link" href={company.founder.linkedin}>Connect with Vaibhav Dureja <span class="diagonal-arrow" aria-hidden="true"></span></a>
+          <a class="text-link" href={company.founder.site}>Founder’s website <span class="diagonal-arrow" aria-hidden="true"></span></a>
+        </div>
+        <p><a href="/privacy/">How we handle personal information</a></p>
+      </div>
+    </div>
+  </section>
+  <section class="section">
+    <div class="wrap">
+      <div class="editorial">
+        <h2>Enquiry types</h2>
+        <ul class="list-grid">{enquiries.map(enquiry => <li>{enquiry}</li>)}</ul>
+      </div>
+      <div class="editorial">
+        <h2>Registered office</h2>
+        <div>
+          <address>{company.registeredName}<br />{company.street}<br />{company.city}, {company.postcode}<br />{company.country}</address>
+          <p class="compact">Company number {company.number}. <a class="text-link" href="/company-information/">Company information</a></p>
+        </div>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

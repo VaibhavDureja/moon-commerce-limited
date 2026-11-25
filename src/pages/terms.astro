@@ -1,0 +1,26 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageIntro from '../components/PageIntro.astro';
+import { company } from '../content/site';
+---
+<BaseLayout title="Terms of Use | Moon Commerce Limited" description="Terms for accessing the Moon Commerce website and information about its development projects." canonical="/terms/">
+  <PageIntro label="Website policies" title="Terms of Use" description="These terms apply to the corporate website operated by Moon Commerce Limited." />
+  <section class="section light legal-site">
+    <div class="wrap"><div class="prose">
+      <h2>Website information</h2>
+      <p>This website provides general information about {company.registeredName}, its areas of research and development, and ways to get in touch. Information on the website may change as projects develop.</p>
+
+      <h2>Development-stage projects</h2>
+      <p>SupplyCorridor is in development. Its proposed functions, markets and integrations describe current plans and are subject to change. Site content is for general information and should not be relied on as investment, legal, financial, tax or trade compliance advice.</p>
+
+      <h2>Intellectual property</h2>
+      <p>Rights in our branding, website design and original content belong to Moon Commerce Limited or the relevant rights holders. You may view the site and share links to it. Please seek permission before using our branding or republishing protected material, except where the law permits.</p>
+
+      <h2>Third-party links</h2>
+      <p>Links to other websites are provided for convenience. The linked services are subject to their own terms, content and availability.</p>
+
+      <h2>Questions and applicable law</h2>
+      <p>These website terms are governed by the law of England and Wales, subject to any mandatory rights that apply to you. For queries, see our <a href="/contact/">Contact page</a> and <a href="/company-information/">registered company details</a>.</p>
+    </div></div>
+  </section>
+</BaseLayout>

@@ -1,0 +1,20 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageIntro from '../components/PageIntro.astro';
+import CallToAction from '../components/CallToAction.astro';
+
+const areas = ['Technical co-founders', 'Full-stack engineering', 'AI and machine learning', 'Product development', 'UX and product design', 'International business development', 'Strategic partnerships'];
+---
+<BaseLayout title="Careers and Collaboration | Moon Commerce Limited" description="Express interest in collaborating with Moon Commerce on engineering, AI, product development, international business and strategic partnerships." canonical="/careers/">
+  <PageIntro label="Careers and collaboration" title="Build what comes next." description="We welcome entrepreneurial people who want to solve meaningful commercial problems through technology." />
+  <section class="section light">
+    <div class="wrap editorial">
+      <h2>Areas of interest</h2>
+      <div class="stack">
+        <p>Moon Commerce is an early-stage, founder-led venture. These areas are open to expressions of interest. Any salaried vacancies will be advertised separately.</p>
+        <ul class="list-grid">{areas.map(area => <li>{area}</li>)}</ul>
+      </div>
+    </div>
+  </section>
+  <CallToAction title="Introduce yourself." description="Tell us what you’ve worked on, what you’re interested in and how you’d like to collaborate." label="Introduce Yourself" />
+</BaseLayout>

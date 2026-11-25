@@ -1,0 +1,25 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageIntro from '../components/PageIntro.astro';
+import CallToAction from '../components/CallToAction.astro';
+
+const areas = [
+  ['Artificial intelligence and intelligent agents', 'We explore AI-assisted research, supplier discovery, information processing, decision support and workflow automation.'],
+  ['Data and business intelligence', 'We explore how structured commercial data and market intelligence can support better-informed business decisions.'],
+  ['Intelligent workflow automation', 'We develop approaches to reduce repetitive administrative work and simplify complex business processes, including documentation and coordination.'],
+  ['Platform architecture', 'We explore modular, API-driven and scalable software architecture for international business applications.'],
+  ['Trust and responsible innovation', 'We prioritise data protection, transparency and appropriate human oversight as we develop AI-assisted workflows.']
+];
+---
+<BaseLayout title="Technology | Moon Commerce Limited" description="Explore Moon Commerce’s technology direction across artificial intelligence, commercial data, workflow automation, platform architecture and responsible innovation." canonical="/technology/">
+  <PageIntro label="Technology" title="Intelligent systems for real business problems." description="Our development work explores how software can simplify complex workflows, improve decision-making and connect commercial systems." />
+  <section class="section light">
+    <div class="wrap">
+      <h2>Technology direction</h2>
+      <div class="directory">
+        {areas.map(([title, description]) => <article><h3>{title}</h3><p>{description}</p></article>)}
+      </div>
+    </div>
+  </section>
+  <CallToAction title="Explore a collaboration." description="We welcome conversations with people working on reliable AI, commercial data, business workflows and scalable infrastructure." label="Discuss Technology" />
+</BaseLayout>

@@ -1,0 +1,12 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageIntro from '../components/PageIntro.astro';
+---
+<BaseLayout title="Page not found | Moon Commerce Limited" description="The page you requested could not be found on the Moon Commerce website." canonical={null} noindex>
+  <PageIntro label="404" title="Page not found." description="The address may have changed. You can return to the homepage or explore our ventures.">
+    <div class="actions">
+      <a class="button primary" href="/">Return Home <span aria-hidden="true">→</span></a>
+      <a class="button secondary" href="/ventures/">Explore Ventures <span class="diagonal-arrow" aria-hidden="true"></span></a>
+    </div>
+  </PageIntro>
+</BaseLayout>

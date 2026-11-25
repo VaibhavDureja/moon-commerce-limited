@@ -1,0 +1,91 @@
+---
+import '@fontsource-variable/space-grotesk/wght.css';
+import '@fontsource-variable/manrope/wght.css';
+import '@fontsource/ibm-plex-mono/latin-400.css';
+import '../styles/site.css';
+import { company, navigation, legal, organization } from '../content/site';
+
+interface Props {
+  title: string;
+  description: string;
+  canonical: string | null;
+  noindex?: boolean;
+}
+const { title, description, canonical, noindex = false } = Astro.props;
+const url = canonical ? new URL(canonical, company.origin).href : null;
+const share = company.origin + '/images/social-share.png';
+const year = new Date().getUTCFullYear();
+---
+<!doctype html>
+<html lang="en-GB">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#101114" />
+    <meta name="description" content={description} />
+    { noindex && <meta name="robots" content="noindex, follow" /> }
+    <title>{title}</title>
+    { url && <link rel="canonical" href={url} /> }
+    <link rel="icon" href="/brand/favicon.svg" type="image/svg+xml" />
+    <link rel="icon" href="/brand/favicon-32.png" sizes="32x32" type="image/png" />
+    <link rel="apple-touch-icon" href="/brand/apple-touch-icon.png" />
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="en_GB" />
+    <meta property="og:site_name" content={company.brand} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    { url && <meta property="og:url" content={url} /> }
+    <meta property="og:image" content={share} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="Moon Commerce. Building the infrastructure for tomorrow’s commerce." />
+    <meta name="twitter:card" content="summary_large_image" />
+    { canonical === '/' && <script type="application/ld+json" is:inline set:html={JSON.stringify(organization)} /> }
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to content</a>
+    <header class="site-header">
+      <div class="wrap header-inner">
+        <a class="brand" href="/" aria-label="Moon Commerce home">
+          <img src="/brand/moon-mark-lime.svg" alt="" width="35" height="35" />
+          <span>Moon <span class="brand-second">Commerce</span></span>
+        </a>
+        <nav class="desktop-nav" aria-label="Main navigation">
+          {navigation.map(([label, href]) => <a href={href} aria-current={canonical === href ? 'page' : undefined}>{label}</a>)}
+        </nav>
+        <details class="mobile-menu">
+          <summary>Menu <span aria-hidden="true"></span></summary>
+          <nav aria-label="Main navigation">
+            {navigation.map(([label, href]) => <a href={href} aria-current={canonical === href ? 'page' : undefined}>{label}</a>)}
+          </nav>
+        </details>
+      </div>
+    </header>
+    <main id="main" tabindex="-1"><slot /></main>
+    <footer class="site-footer">
+      <div class="wrap">
+        <div class="footer-grid">
+          <div class="footer-intro">
+            <a class="brand" href="/" aria-label="Moon Commerce home">
+              <img src="/brand/moon-mark-lime.svg" alt="" width="35" height="35" />
+              <span>Moon <span class="brand-second">Commerce</span></span>
+            </a>
+            <p>Building the infrastructure for tomorrow’s commerce.</p>
+          </div>
+          <div>
+            <h2>Explore</h2>
+            <ul>{navigation.slice(1).map(([label, href]) => <li><a href={href}>{label}</a></li>)}</ul>
+          </div>
+          <div>
+            <h2>Company</h2>
+            <ul>{legal.map(([label, href]) => <li><a href={href}>{label}</a></li>)}</ul>
+          </div>
+        </div>
+        <div class="footer-base">
+          <p>© {year} Moon Commerce Limited</p>
+          <p>Registered in {company.jurisdiction} · No. {company.number}</p>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

@@ -1,0 +1,24 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageIntro from '../components/PageIntro.astro';
+import { company } from '../content/site';
+---
+<BaseLayout title="Company Information | Moon Commerce Limited" description="Verified registration details for Mooncommerce Limited, company number 15894361, including the registered office and incorporation date." canonical="/company-information/">
+  <PageIntro label="Registered company details" title="Company Information" description="Moon Commerce is the trading brand of Mooncommerce Limited, a private limited company incorporated in the United Kingdom." />
+  <section class="section light">
+    <div class="wrap editorial">
+      <h2>Corporate disclosures</h2>
+      <div class="stack">
+        <dl class="company-data">
+          <div><dt>Registered company name</dt><dd>{company.registeredName}</dd></div>
+          <div><dt>Company registration number</dt><dd>{company.number}</dd></div>
+          <div><dt>Jurisdiction</dt><dd>{company.jurisdiction}</dd></div>
+          <div><dt>Date of incorporation</dt><dd>{company.incorporated}</dd></div>
+          <div><dt>Company type</dt><dd>Private limited company</dd></div>
+          <div><dt>Registered office</dt><dd><address>{company.street}<br />{company.city}, {company.postcode}<br />{company.country}</address></dd></div>
+        </dl>
+        <a class="text-link" href={company.register}>View the Companies House record <span class="diagonal-arrow" aria-hidden="true"></span></a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
