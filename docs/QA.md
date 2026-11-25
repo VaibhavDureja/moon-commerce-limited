@@ -32,3 +32,7 @@ Automated accessibility results cover the checks run. Production HTTPS, DNS, red
 - Founder review covers the Privacy Policy, Terms of Use and Cookie Policy before public publication.
 - Companies House listed an overdue confirmation statement and an active proposal to strike off on 25 November 2026. The filing history includes a first Gazette notice dated 17 November 2026. [Company record](https://find-and-update.company-information.service.gov.uk/company/15894361) · [Filing history](https://find-and-update.company-information.service.gov.uk/company/15894361/filing-history)
 - Planned SupplyCorridor features are described as proposals. The site includes the founder’s existing SSRN publication and editorial topics for future writing.
+
+## Rotating homepage globe
+
+The updated globe passed desktop and 320px mobile browser checks for rotation, keyboard and pointer controls, viewport pause and resume, reduced motion and the JavaScript-free illustration. Automated accessibility checks passed. Local Cloudflare Pages mobile Lighthouse scored 100 in all four categories.

@@ -6,7 +6,7 @@ const height = 539;
 const centre = [width / 2, 254];
 const radius = 197;
 const latitude = 29;
-const land = JSON.parse(landSource);
+const minimumVisible = 0.65;
 const grid = geoGraticule10();
 const sphere = { type: 'Sphere' };
 const markets = [
@@ -27,6 +27,7 @@ function enhanceGlobe(figure) {
   const context = canvas.getContext('2d');
   if (!context) return;
 
+  const land = JSON.parse(landSource);
   const projection = geoOrthographic().translate(centre).scale(radius).precision(0.8);
   const path = geoPath(projection, context);
   const motionPreference = matchMedia('(prefers-reduced-motion: reduce)');
@@ -34,6 +35,7 @@ function enhanceGlobe(figure) {
   let inView = false;
   let longitude = 38;
   let previousFrame = 0;
+  let nextFrame = 0;
   let animationFrame = 0;
 
   function drawCircle(x, y, size) {
@@ -114,10 +116,12 @@ function enhanceGlobe(figure) {
   }
 
   function animate(time) {
-    if (!previousFrame || time - previousFrame >= 1000 / 30) {
+    if (time >= nextFrame) {
       if (previousFrame) longitude = (longitude + Math.min(time - previousFrame, 100) * 0.008) % 360;
       previousFrame = time;
+      const started = performance.now();
       draw();
+      nextFrame = time + Math.max(1000 / 30, (performance.now() - started) * 3);
     }
     animationFrame = requestAnimationFrame(animate);
   }
@@ -127,7 +131,7 @@ function enhanceGlobe(figure) {
       if (!animationFrame) animationFrame = requestAnimationFrame(animate);
     } else {
       cancelAnimationFrame(animationFrame);
-      animationFrame = previousFrame = 0;
+      animationFrame = previousFrame = nextFrame = 0;
     }
   }
 
@@ -144,9 +148,9 @@ function enhanceGlobe(figure) {
   toggle.hidden = false;
   setPlaying(playing);
   const visibility = new IntersectionObserver(([entry]) => {
-    inView = entry.isIntersecting;
+    inView = entry.intersectionRatio >= minimumVisible;
     syncAnimation();
-  });
+  }, { threshold: minimumVisible });
   visibility.observe(visual);
   const sizing = new ResizeObserver(resize);
   sizing.observe(visual);
@@ -159,4 +163,11 @@ function enhanceGlobe(figure) {
 }
 
 const figure = document.querySelector('[data-trade-globe]');
-if (figure) enhanceGlobe(figure);
+if (figure && 'IntersectionObserver' in window && 'ResizeObserver' in window) {
+  const activate = new IntersectionObserver(([entry]) => {
+    if (entry.intersectionRatio < minimumVisible) return;
+    activate.disconnect();
+    enhanceGlobe(figure);
+  }, { threshold: minimumVisible });
+  activate.observe(figure.querySelector('.network-visual'));
+}

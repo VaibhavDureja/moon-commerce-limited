@@ -1,5 +1,6 @@
 ---
 import '@fontsource-variable/space-grotesk/wght.css';
+import homepageHeadingFont from '@fontsource-variable/space-grotesk/files/space-grotesk-latin-wght-normal.woff2?url';
 import '@fontsource-variable/manrope/wght.css';
 import '@fontsource/ibm-plex-mono/latin-400.css';
 import '../styles/site.css';
@@ -25,6 +26,7 @@ const year = new Date().getUTCFullYear();
     <meta name="description" content={description} />
     { noindex && <meta name="robots" content="noindex, follow" /> }
     <title>{title}</title>
+    { canonical === "/" && <link rel="preload" href={homepageHeadingFont} as="font" type="font/woff2" crossorigin="anonymous" /> }
     { url && <link rel="canonical" href={url} /> }
     <link rel="icon" href="/brand/favicon.svg" type="image/svg+xml" />
     <link rel="icon" href="/brand/favicon-32.png" sizes="32x32" type="image/png" />
